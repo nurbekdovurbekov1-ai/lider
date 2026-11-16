@@ -1,0 +1,3 @@
+Mahsulot fotosuratlarini shu papkaga qoʻying.
+Fayl nomi = artikul:  BS-0986-F.jpg  (asosiy),  BS-0986-F_2.jpg,  BS-0986-F_3.jpg ...
+Keyin:  python manage.py import_products data/products.xlsx --images data/photos

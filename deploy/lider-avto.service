@@ -1,0 +1,21 @@
+[Unit]
+Description=Lider Avto Django Gunicorn Daemon
+After=network.target
+
+[Service]
+User=__DEPLOY_USER__
+Group=www-data
+WorkingDirectory=/var/www/lider-avto
+EnvironmentFile=/var/www/lider-avto/.env
+ExecStart=/var/www/lider-avto/venv/bin/gunicorn \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          --timeout 90 \
+          --access-logfile - \
+          --error-logfile - \
+          config.wsgi:application
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

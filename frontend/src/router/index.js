@@ -1,0 +1,119 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+// Lazy-load client pages (CheckoutView eager-loaded for reliability)
+import CheckoutView   from '@/views/client/CheckoutView.vue'
+const HomeView       = () => import('@/views/client/HomeView.vue')
+const CatalogView    = () => import('@/views/client/CatalogView.vue')
+const ProductDetail  = () => import('@/views/client/ProductDetailView.vue')
+const CartView       = () => import('@/views/client/CartView.vue')
+const ProfileView    = () => import('@/views/client/ProfileView.vue')
+const ContactView    = () => import('@/views/client/ContactView.vue')
+const AboutView      = () => import('@/views/client/AboutView.vue')
+
+// Lazy-load admin pages
+const AdminLogin       = () => import('@/views/admin/LoginView.vue')
+const AdminDashboard   = () => import('@/views/admin/DashboardView.vue')
+const AdminProducts    = () => import('@/views/admin/ProductsView.vue')
+const AdminProductForm = () => import('@/views/admin/ProductFormView.vue')
+const AdminCategories  = () => import('@/views/admin/CategoriesView.vue')
+const AdminCarModels    = () => import('@/views/admin/CarModelsView.vue')
+const AdminStock       = () => import('@/views/admin/StockView.vue')
+const AdminOrders      = () => import('@/views/admin/OrdersView.vue')
+const AdminCustomers   = () => import('@/views/admin/CustomersView.vue')
+const AdminReports     = () => import('@/views/admin/ReportsView.vue')
+const AdminContacts    = () => import('@/views/admin/ContactsView.vue')
+
+// Layouts
+const ClientLayout = () => import('@/layouts/ClientLayout.vue')
+const AdminLayout  = () => import('@/layouts/AdminLayout.vue')
+
+const routes = [
+  {
+    path: '/',
+    component: ClientLayout,
+    children: [
+      { path: '',         name: 'home',       component: HomeView },
+      { path: 'catalog',  name: 'catalog',    component: CatalogView },
+      { path: 'product/:slug', name: 'product', component: ProductDetail },
+      { path: 'cart',     name: 'cart',       component: CartView, meta: { requiresAuth: true } },
+      { path: 'checkout', name: 'checkout',   component: CheckoutView, meta: { requiresAuth: true } },
+      { path: 'profile',  name: 'profile',    component: ProfileView, meta: { requiresAuth: true } },
+      { path: 'contact',  name: 'contact',    component: ContactView },
+      { path: 'about',    name: 'about',      component: AboutView },
+    ]
+  },
+  {
+    path: '/admin/login',
+    name: 'admin-login',
+    component: AdminLogin,
+  },
+  {
+    path: '/dashboard',
+    redirect: '/admin/dashboard',
+  },
+  {
+    path: '/admin',
+    component: AdminLayout,
+    meta: { requiresAuth: true, requiresAdmin: true },
+    children: [
+      { path: '',           redirect: '/admin/dashboard' },
+      { path: 'dashboard',  name: 'admin-dashboard',      component: AdminDashboard },
+      { path: 'products',   name: 'admin-products',        component: AdminProducts },
+      { path: 'products/new',  name: 'admin-product-new', component: AdminProductForm },
+      { path: 'products/:id',  name: 'admin-product-edit',component: AdminProductForm },
+      { path: 'categories', name: 'admin-categories',       component: AdminCategories },
+      { path: 'car-models', name: 'admin-car-models',       component: AdminCarModels },
+      { path: 'stock',      name: 'admin-stock',            component: AdminStock },
+      { path: 'orders',     name: 'admin-orders',          component: AdminOrders },
+      { path: 'customers',  name: 'admin-customers',       component: AdminCustomers },
+      { path: 'reports',    name: 'admin-reports',         component: AdminReports },
+      { path: 'contacts',   name: 'admin-contacts',        component: AdminContacts },
+    ]
+  },
+  { path: '/:pathMatch(.*)*', redirect: '/' }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) return { el: to.hash, behavior: 'smooth' }
+    return { top: 0, behavior: 'smooth' }
+  },
+})
+
+// Navigation guard
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const isAdmin = user?.role === 'admin'
+
+  // If already logged in as admin and visiting /admin/login -> redirect to dashboard
+  if (to.path === '/admin/login') {
+    if (token && isAdmin) {
+      return next('/admin/dashboard')
+    }
+    return next()
+  }
+
+  // Protected admin routes (/admin/* or /dashboard)
+  if (to.path.startsWith('/admin') || to.meta.requiresAdmin) {
+    if (!token || !isAdmin) {
+      return next({
+        path: '/admin/login',
+        query: { redirect: to.fullPath },
+      })
+    }
+  }
+
+  // Protected client routes
+  if (to.meta.requiresAuth && !token) {
+    window.dispatchEvent(new CustomEvent('auth:open-modal'))
+    return next('/')
+  }
+
+  next()
+})
+
+export default router
