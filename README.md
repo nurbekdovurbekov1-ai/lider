@@ -75,3 +75,4 @@ Test mijoz: `+998901112233` / `password123`. Admin panel: `/admin`, Swagger: `/a
   eshik-deraza mahsulotlari qoladi. Toza boshlash uchun `db.sqlite3` ni o'chirib, `migrate` va `seed` qiling.
 - `config/settings.py` da `DEBUG=True`, `SECRET_KEY` va `CORS_ALLOW_ALL_ORIGINS` ishlab chiqarish uchun mos emas.
   Serverga chiqarishdan oldin `deploy/SERVER_SETUP.md` dagi ko'rsatmalarga qarang va bu qiymatlarni almashtiring.
+# lider
