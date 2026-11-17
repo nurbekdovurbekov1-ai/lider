@@ -22,13 +22,18 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set build-time environment variables
+# Set build-time environment variables (only for build, will be overridden by Render at runtime)
 ARG DJANGO_SECRET_KEY=build-time-secret-key-do-not-use-in-production
+ARG DJANGO_DEBUG=0
+ARG DJANGO_ALLOWED_HOSTS=*
+ARG DJANGO_HTTPS=0
+ARG DJANGO_CSRF_TRUSTED_ORIGINS=
+
 ENV DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-ENV DJANGO_DEBUG=0
-ENV DJANGO_ALLOWED_HOSTS=*.onrender.com,*
-ENV DJANGO_HTTPS=1
-ENV DJANGO_CSRF_TRUSTED_ORIGINS=https://*.onrender.com
+ENV DJANGO_DEBUG=${DJANGO_DEBUG}
+ENV DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+ENV DJANGO_HTTPS=${DJANGO_HTTPS}
+ENV DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS}
 
 # Copy frontend build
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
