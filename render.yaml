@@ -1,0 +1,46 @@
+services:
+  # Django Backend Service
+  - type: web
+    name: lider-avto-backend
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 90
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "*.onrender.com"
+      - key: DJANGO_HTTPS
+        value: "1"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lider-avto-db
+          property: connectionString
+    disk:
+      name: media-files
+      mountPath: /opt/render/project/media
+      sizeGB: 1
+
+  # PostgreSQL Database
+  - type: pserv
+    name: lider-avto-db
+    databaseName: lider_avto
+    user: lider_avto_user
+    version: "15"
+
+  # Frontend Static Site (Vue.js)
+  - type: site
+    name: lider-avto-frontend
+    runtime: node
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://lider-avto-backend.onrender.com
