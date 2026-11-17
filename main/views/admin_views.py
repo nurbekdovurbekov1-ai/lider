@@ -41,14 +41,14 @@ from ..filters.filters import OrderFilter, ProductFilter
 Admin boshqaruv paneli uchun asosiy statistika.
 
 **Qaytariladigan ma'lumotlar:**
-- 	otal_orders — Jami buyurtmalar soni
-- 	oday_orders — Bugungi buyurtmalar soni
+- total_orders — Jami buyurtmalar soni
+- today_orders — Bugungi buyurtmalar soni
 - pending_orders — Kutilayotgan buyurtmalar soni
-- 	otal_products — Faol mahsulotlar soni
-- 	otal_customers — Jami mijozlar soni
+- total_products — Faol mahsulotlar soni
+- total_customers — Jami mijozlar soni
 - monthly_revenue — Joriy oy daromadi (UZS, yetkazilgan va jarayondagi buyurtmalar)
 - order_by_status — Holat bo'yicha buyurtmalar taqsimoti
-- 	op_products — Eng ko'p buyurtma qilingan 5 ta mahsulot
+- top_products — Eng ko'p buyurtma qilingan 5 ta mahsulot
 
 **Header:** Authorization: Token <admin_token>  
 **Ruxsat:** Faqat admin

@@ -99,12 +99,24 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+import dj_database_url
+
+if os.environ.get("DATABASE_URL"):
+    # Render PostgreSQL
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Local SQLite
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Custom User Model

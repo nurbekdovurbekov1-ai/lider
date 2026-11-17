@@ -78,10 +78,17 @@ def cart_add(request):
     cart = get_or_create_cart(request.user)
     data = serializer.validated_data
 
-    product = Product.objects.get(id=data["product_id"])
+    try:
+        product = Product.objects.get(id=data["product_id"])
+    except Product.DoesNotExist:
+        return Response({"error": "Mahsulot topilmadi"}, status=status.HTTP_400_BAD_REQUEST)
+    
     color = None
     if data.get("color_id"):
-        color = ProductColor.objects.get(id=data["color_id"])
+        try:
+            color = ProductColor.objects.get(id=data["color_id"])
+        except ProductColor.DoesNotExist:
+            return Response({"error": "Rang topilmadi"}, status=status.HTTP_400_BAD_REQUEST)
 
     existing = cart.items.filter(
         product=product,
