@@ -30,13 +30,5 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vue-vendor': ['vue', 'vue-router', 'pinia'],
-          'ui-vendor': ['@lucide/vue', 'chart.js', 'vue-chartjs'],
-        },
-      },
-    },
   },
 })
