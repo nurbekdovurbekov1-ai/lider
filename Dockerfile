@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set build-time environment variables
+ARG DJANGO_SECRET_KEY=build-time-secret-key-do-not-use-in-production
+ENV DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+ENV DJANGO_DEBUG=0
+
 # Copy frontend build
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
