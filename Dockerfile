@@ -1,13 +1,4 @@
-# Multi-stage build for Django + Vue.js
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ ./
-RUN npm run build
-
-# Python stage for Django
+# Django Backend Only (API)
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -34,9 +25,6 @@ ENV DJANGO_DEBUG=${DJANGO_DEBUG}
 ENV DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
 ENV DJANGO_HTTPS=${DJANGO_HTTPS}
 ENV DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS}
-
-# Copy frontend build
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 # Copy Django project
 COPY . .

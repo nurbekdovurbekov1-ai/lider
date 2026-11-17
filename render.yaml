@@ -1,5 +1,5 @@
 services:
-  # Django Backend Service
+  # Django Backend Service (API Only)
   - type: web
     name: lider-avto-backend
     env: python
@@ -14,11 +14,11 @@ services:
       - key: DJANGO_DEBUG
         value: "0"
       - key: DJANGO_ALLOWED_HOSTS
-        value: "lider-x9th.onrender.com,*.onrender.com"
+        value: "*.onrender.com"
       - key: DJANGO_HTTPS
         value: "1"
       - key: DJANGO_CSRF_TRUSTED_ORIGINS
-        value: "https://lider-x9th.onrender.com,https://*.onrender.com"
+        value: "https://*.onrender.com"
       - key: DATABASE_URL
         fromDatabase:
           name: lider-avto-db
@@ -34,13 +34,3 @@ services:
     databaseName: lider_avto
     user: lider_avto_user
     version: "15"
-
-  # Frontend Static Site (Vue.js)
-  - type: site
-    name: lider-avto-frontend
-    runtime: node
-    buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://lider-avto-backend.onrender.com
