@@ -26,6 +26,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 ARG DJANGO_SECRET_KEY=build-time-secret-key-do-not-use-in-production
 ENV DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
 ENV DJANGO_DEBUG=0
+ENV DJANGO_ALLOWED_HOSTS=*
+ENV DJANGO_HTTPS=0
+ENV DJANGO_CSRF_TRUSTED_ORIGINS=
 
 # Copy frontend build
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
