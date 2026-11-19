@@ -1,21 +1,12 @@
 services:
-  # Vue.js Frontend (Static Site)
-  - type: web
-    name: lider-avto-frontend
-    env: node
-    buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: VITE_API_URL
-        value: https://lider-avto-backend.onrender.com
-
-  # Django Backend Service (API Only)
+  # Django Backend + Frontend (Single Service)
   - type: web
     name: lider-avto-backend
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate --noinput
+      cd frontend && npm install && npm run build
+      cd .. && python manage.py migrate --noinput
       python manage.py collectstatic --noinput
     startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 90
     envVars:
