@@ -52,11 +52,11 @@
               <button
                 v-for="img in product.images"
                 :key="img.id"
-                @click="selectedImage = img.image"
+                @click="selectedImage = getMediaUrl(img.image)"
                 class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all duration-200"
-                :class="selectedImage === img.image ? 'border-brand-500 shadow-md' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'"
+                :class="selectedImage === getMediaUrl(img.image) ? 'border-brand-500 shadow-md' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'"
               >
-                <img :src="img.image" :alt="product.name" class="w-full h-full object-cover" />
+                <img :src="getMediaUrl(img.image)" :alt="product.name" class="w-full h-full object-cover" />
               </button>
             </div>
           </div>
@@ -244,6 +244,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from '@/stores/alert'
 import { useSiteStore } from '@/stores/site'
 import { useI18n } from '@/i18n'
+import { getMediaUrl } from '@/utils/mediaUrl'
 import AuthModal from '@/components/client/AuthModal.vue'
 
 const { t, categoryName } = useI18n()
@@ -333,7 +334,7 @@ onMounted(async () => {
     colors.value = colorsRes.data
 
     const mainImg = product.value.images?.find(i => i.is_main) || product.value.images?.[0]
-    selectedImage.value = mainImg?.image || null
+    selectedImage.value = getMediaUrl(mainImg?.image)
 
     if (colors.value.length) {
       selectedColor.value = colors.value[0]

@@ -67,6 +67,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
+import { getMediaUrl } from '@/utils/mediaUrl'
 
 const { t, categoryName } = useI18n()
 const router = useRouter()
@@ -90,10 +91,10 @@ const displayPrice = computed(() => {
 
 const mainImage = computed(() => {
   // Use main_image if available (from ProductListSerializer)
-  if (props.product.main_image) return props.product.main_image;
+  if (props.product.main_image) return getMediaUrl(props.product.main_image);
   // Fallback for ProductDetailSerializer where images list is available
   const mainImg = props.product.images?.find(i => i.is_main) || props.product.images?.[0]
-  return mainImg?.image || '/no-image.svg'
+  return getMediaUrl(mainImg?.image)
 })
 
 function handleImgError(e) {

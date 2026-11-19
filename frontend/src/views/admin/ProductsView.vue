@@ -148,6 +148,7 @@ import { Search, Package, Plus, Pencil, Trash2 } from '@lucide/vue'
 import { adminApi } from '@/api/admin'
 import { productsApi } from '@/api/products'
 import { useAlertStore } from '@/stores/alert'
+import { getMediaUrl } from '@/utils/mediaUrl'
 
 const alertStore = useAlertStore()
 const products = ref([])
@@ -162,7 +163,7 @@ const totalPages = computed(() => Math.ceil(totalCount.value / pageSize))
 
 function mainImage(product) {
   const img = product.images?.find(i => i.is_main) || product.images?.[0]
-  return img?.image || '/no-image.svg'
+  return getMediaUrl(img?.image)
 }
 function formatPrice(p) { return p ? new Intl.NumberFormat('uz-UZ', { style: 'currency', currency: 'UZS', maximumFractionDigits: 0 }).format(p) : '—' }
 

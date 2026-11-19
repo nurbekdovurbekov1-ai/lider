@@ -1,4 +1,14 @@
 services:
+  # Vue.js Frontend (Static Site)
+  - type: web
+    name: lider-avto-frontend
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://lider-avto-backend.onrender.com
+
   # Django Backend Service (API Only)
   - type: web
     name: lider-avto-backend
