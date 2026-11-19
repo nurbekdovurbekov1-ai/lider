@@ -1,0 +1,1 @@
+function e(e){return e?(e.startsWith(`http`),e):`/no-image.svg`}export{e as t};
